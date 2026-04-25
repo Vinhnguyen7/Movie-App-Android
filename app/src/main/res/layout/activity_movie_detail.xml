@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#141414"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="32dp">
+
+        <!-- Backdrop -->
+        <ImageView
+            android:id="@+id/imgBackdrop"
+            android:layout_width="0dp"
+            android:layout_height="260dp"
+            android:scaleType="centerCrop"
+            android:alpha="0.8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Gradient overlay backdrop bottom -->
+        <View
+            android:id="@+id/backdropGradient"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:background="@drawable/gradient_hero_bottom"
+            app:layout_constraintBottom_toBottomOf="@id/imgBackdrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Nút back -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_icon_circle"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="Back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+        <!-- Nút yêu thích (góc phải) -->
+        <ImageButton
+            android:id="@+id/btnFavorite"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_icon_circle"
+            android:src="@android:drawable/btn_star_big_off"
+            android:contentDescription="Yêu thích"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+        <!-- Poster card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPoster"
+            android:layout_width="120dp"
+            android:layout_height="175dp"
+            android:layout_marginStart="20dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/imgBackdrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgBackdrop">
+
+            <ImageView
+                android:id="@+id/imgDetailPoster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Tên phim -->
+        <TextView
+            android:id="@+id/txtDetailTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cardPoster"
+            app:layout_constraintTop_toBottomOf="@id/imgBackdrop" />
+
+        <!-- Rating -->
+        <TextView
+            android:id="@+id/txtDetailRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#FFC107"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/txtDetailTitle"
+            app:layout_constraintTop_toBottomOf="@id/txtDetailTitle" />
+
+        <!-- Runtime -->
+        <TextView
+            android:id="@+id/txtRuntime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#A0A0A0"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="@id/txtDetailTitle"
+            app:layout_constraintTop_toBottomOf="@id/txtDetailRating" />
+
+        <!-- Nút PHÁT LOCAL -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPlay"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="24dp"
+            android:text="▶  Phát phim"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="#FFFFFF"
+            app:cornerRadius="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardPoster" />
+
+        <!-- Nhãn Nội dung phim -->
+        <TextView
+            android:id="@+id/labelStory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Nội dung phim"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnPlay" />
+
+        <!-- Overview -->
+        <TextView
+            android:id="@+id/txtOverview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="6dp"
+            android:textColor="#BBBBBB"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelStory" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

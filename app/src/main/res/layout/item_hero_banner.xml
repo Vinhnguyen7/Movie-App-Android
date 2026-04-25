@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/item_hero_banner.xml -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Ảnh backdrop full màn hình -->
+    <ImageView
+        android:id="@+id/ivBannerImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#1F1F1F"
+        android:contentDescription="Banner"
+        android:scaleType="centerCrop" />
+
+    <!-- Badge "SERIES" (ẩn mặc định, hiện nếu là TV) -->
+    <TextView
+        android:id="@+id/tvSeriesBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="18dp"
+        android:background="#80000000"
+        android:letterSpacing="0.25"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:text="S  E  R  I  E  S"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:visibility="gone" />
+
+    <!-- Tên phim lớn ở giữa -->
+    <TextView
+        android:id="@+id/tvBannerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:letterSpacing="0.04"
+        android:maxLines="2"
+        android:shadowColor="#CC000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="10"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+</FrameLayout>

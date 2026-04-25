@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#141414"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ── KHI ĐÃ ĐĂNG NHẬP ── -->
+        <LinearLayout
+            android:id="@+id/layoutLoggedIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Header nền gradient -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/gradient_profile_header">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
+
+                    <!-- Avatar -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:src="@drawable/placeholder"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircleImage"
+                        app:strokeColor="#E50914"
+                        app:strokeWidth="3dp" />
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Tên người dùng"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="email@example.com"
+                        android:textColor="#A0A0A0"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Menu thao tác -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_profile_card"
+                android:orientation="vertical">
+
+                <!-- Phim yêu thích -->
+                <LinearLayout
+                    android:id="@+id/btnFavorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/btn_star_big_on"
+                        app:tint="#E50914" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Phim yêu thích"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:rotation="90"
+                        app:tint="#757575" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
+
+                <!-- Lịch sử xem -->
+                <LinearLayout
+                    android:id="@+id/btnHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_recent_history"
+                        app:tint="#A0A0A0" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Lịch sử xem"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:rotation="90"
+                        app:tint="#757575" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Đăng xuất -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_profile_card"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/btnLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_lock_power_off"
+                        app:tint="#E50914" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:text="Đăng xuất"
+                        android:textColor="#E50914"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ── KHI CHƯA ĐĂNG NHẬP ── -->
+        <LinearLayout
+            android:id="@+id/layoutLoggedOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="80dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="40dp"
+            android:visibility="visible">
+
+            <!-- Icon lớn -->
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                app:tint="#E50914" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Chào mừng đến MovieApp"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Đăng nhập để lưu phim yêu thích và theo dõi lịch sử xem"
+                android:textColor="#A0A0A0"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
+
+            <!-- Nút Đăng nhập -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoLogin"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="36dp"
+                android:text="Đăng nhập"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="#E50914"
+                app:cornerRadius="8dp" />
+
+            <!-- Nút Đăng ký -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoRegister"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:text="Tạo tài khoản mới"
+                android:textSize="16sp"
+                android:textColor="#E50914"
+                app:backgroundTint="#1F1F1F"
+                app:cornerRadius="8dp"
+                app:strokeColor="#E50914"
+                app:strokeWidth="1dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#141414">
+
+    <!-- ══════════════════════════════════════════════
+         TOP APP BAR — nền trong suốt, đè lên banner
+         ══════════════════════════════════════════════ -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
+
+        <!-- Hàng logo + icon -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:letterSpacing="0.06"
+                android:text="IXMOVIE"
+                android:textColor="#4B780F"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                />
+
+            <ImageView
+                android:id="@+id/ivNavSearch"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="18dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Search"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/ivNavProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_avatar"
+                android:contentDescription="Profile"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                app:tint="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Tabs danh mục -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingBottom="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/llCategoryTabs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tabAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@drawable/bg_tab_selected"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Tất cả"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tabTVShows"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="TV Shows"
+                    android:textColor="#A0A0A0"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tabMovies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Phim"
+                    android:textColor="#A0A0A0"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tabMyList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Danh sách"
+                    android:textColor="#A0A0A0"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ══════════════════════════════════════════════
+         NỘI DUNG CUỘN
+         ══════════════════════════════════════════════ -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ════════════════════════
+                 HERO BANNER
+                 ════════════════════════ -->
+            <FrameLayout
+                android:id="@+id/flHeroBanner"
+                android:layout_width="match_parent"
+                android:layout_height="430dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpHeroBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <!-- Gradient mờ dần xuống -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/gradient_hero_bottom" />
+
+                <!-- Chấm dot indicator -->
+                <LinearLayout
+                    android:id="@+id/llBannerDots"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="90dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
+
+                <!-- Genre + nút Play/Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="14dp">
+
+                    <TextView
+                        android:id="@+id/tvFeaturedGenre"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hồi hộp · Kịch tính · Hành động"
+                        android:textColor="#A0A0A0"
+                        android:textSize="12sp" />
+
+                    <!-- Hàng 3 nút -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <!-- + Danh sách -->
+                        <LinearLayout
+                            android:id="@+id/btnAddToList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@android:drawable/ic_input_add"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="Danh sách"
+                                android:textColor="#A0A0A0"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <!-- ▶ Phát -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPlayFeatured"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1.6"
+                            android:text="▶  Phát"
+                            android:textColor="#000000"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#FFFFFF"
+                            app:cornerRadius="4dp" />
+
+                        <!-- ℹ Thông tin -->
+                        <LinearLayout
+                            android:id="@+id/btnFeaturedInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@android:drawable/ic_dialog_info"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="Thông tin"
+                                android:textColor="#A0A0A0"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- ════════════════════════
+                 SECTION: Phổ biến
+                 ════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Phổ biến trên Netflix"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllPopular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xem tất cả"
+                        android:textColor="#A0A0A0"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPopular"
+                    android:layout_width="match_parent"
+                    android:layout_height="155dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="4dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
+
+            <!-- ════════════════════════
+                 SECTION: Thịnh hành
+                 ════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Thịnh hành ngay lúc này"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllTrending"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xem tất cả"
+                        android:textColor="#A0A0A0"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTrending"
+                    android:layout_width="match_parent"
+                    android:layout_height="155dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="4dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
+
+            <!-- ════════════════════════
+                 SECTION: Hành động
+                 ════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="80dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Hành động"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xem tất cả"
+                        android:textColor="#A0A0A0"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="155dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="4dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Loading overlay (đỏ như Netflix) -->
+    <ProgressBar
+        android:id="@+id/progressBarOverlay"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="#E50914"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,22 +8,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.movieapplication.R;
-import com.example.movieapplication.data.UserPreferences;
+import com.example.movieapplication.ui.viewmodel.AuthViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import com.example.movieapplication.R;
+
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputLayout tilName, tilEmail, tilPassword, tilConfirmPassword;
+    private TextInputLayout   tilName, tilEmail, tilPassword, tilConfirmPassword;
     private TextInputEditText etName, etEmail, etPassword, etConfirmPassword;
-    private MaterialButton btnRegister;
-    private TextView tvRegisterError, tvGoLogin;
-    private ProgressBar progressRegister;
+    private MaterialButton    btnRegister;
+    private TextView          tvRegisterError, tvGoLogin;
+    private ProgressBar       progressRegister;
 
-    private UserPreferences userPrefs;
+    private AuthViewModel authViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        userPrefs = UserPreferences.getInstance(this);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         initViews();
         setupListeners();
@@ -67,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void attemptRegister() {
         String name     = etName.getText()            != null ? etName.getText().toString().trim() : "";
         String email    = etEmail.getText()           != null ? etEmail.getText().toString().trim() : "";
-        String password = etPassword.getText()        != null ? etPassword.getText().toString() : "";
+        String password = etPassword.getText()        != null ? etPassword.getText().toString()      : "";
         String confirm  = etConfirmPassword.getText() != null ? etConfirmPassword.getText().toString() : "";
 
         // Reset lỗi
@@ -79,15 +81,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Validate
         if (TextUtils.isEmpty(name)) {
-            tilName.setError("Vui lòng nhập tên");
+            tilName.setError("Vui lòng nhập tên hiển thị");
             return;
         }
-        if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Email không hợp lệ");
+        if (name.length() < 2) {
+            tilName.setError("Tên quá ngắn");
             return;
         }
-        if (userPrefs.isEmailRegistered(email)) {
-            tilEmail.setError("Email này đã được đăng ký");
+        if (TextUtils.isEmpty(email)) {
+            tilEmail.setError("Vui lòng nhập email");
+            return;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError("Email không đúng định dạng");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            tilPassword.setError("Vui lòng nhập mật khẩu");
             return;
         }
         if (password.length() < 6) {
@@ -99,18 +109,29 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        progressRegister.setVisibility(View.VISIBLE);
-        btnRegister.setEnabled(false);
+        // Hiện loading
+        setLoading(true);
 
-        btnRegister.postDelayed(() -> {
-            userPrefs.register(name, email, password);
-            progressRegister.setVisibility(View.GONE);
+        // Gọi Firebase Auth qua ViewModel
+        authViewModel.register(name, email, password).observe(this, result -> {
+            setLoading(false);
 
-            // Đăng ký xong → về MainActivity
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }, 800);
+            if (result.success) {
+                // Đăng ký thành công → về MainActivity
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                tvRegisterError.setText(result.errorMessage);
+                tvRegisterError.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void setLoading(boolean loading) {
+        progressRegister.setVisibility(loading ? View.VISIBLE : View.GONE);
+        btnRegister.setEnabled(!loading);
+        btnRegister.setText(loading ? "Đang tạo tài khoản..." : "Tạo tài khoản");
     }
 }

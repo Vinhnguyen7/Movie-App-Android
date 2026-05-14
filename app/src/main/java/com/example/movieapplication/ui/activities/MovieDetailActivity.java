@@ -9,25 +9,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.example.movieapplication.R;
-import com.example.movieapplication.data.UserPreferences;
 import com.example.movieapplication.data.models.Movie;
+import com.example.movieapplication.ui.activities.VideoplayerActivity;
+import com.example.movieapplication.ui.viewmodel.AuthViewModel;
+import com.example.movieapplication.ui.viewmodel.FavoritesViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import org.parceler.Parcels;
 
+import com.example.movieapplication.R;
+
+
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private ImageView imgBackdrop;
-    private ImageView imgDetailPoster;
-    private TextView txtDetailTitle, txtDetailRating, txtRuntime, txtOverview;
-    private ImageButton btnBack, btnFavorite;
+    private ImageView      imgBackdrop, imgDetailPoster;
+    private TextView       txtDetailTitle, txtDetailRating, txtRuntime, txtOverview;
+    private ImageButton    btnBack, btnFavorite;
     private MaterialButton btnPlay;
 
-    private Movie movie;
-    private UserPreferences userPrefs;
+    private Movie            movie;
+    private AuthViewModel    authViewModel;
+    private FavoritesViewModel favoritesViewModel;
+
     private boolean isFavorite = false;
 
     @Override
@@ -35,10 +41,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        // Ẩn ActionBar — tự thiết kế header
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        userPrefs = UserPreferences.getInstance(this);
+        authViewModel      = new ViewModelProvider(this).get(AuthViewModel.class);
+        favoritesViewModel = new ViewModelProvider(this).get(FavoritesViewModel.class);
 
         initViews();
         receiveData();
@@ -58,21 +64,17 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void receiveData() {
         movie = Parcels.unwrap(getIntent().getParcelableExtra("movie_data"));
-
-        if (movie == null) {
-            finish();
-            return;
-        }
+        if (movie == null) { finish(); return; }
 
         displayMovieDetails();
+        checkFavoriteStatus();
         setupListeners();
     }
 
-    private void displayMovieDetails() {
-        String title = movie.getTitle() != null ? movie.getTitle()
-                : movie.getName()  != null ? movie.getName() : "Không có tên";
+    // ── Display ───────────────────────────────────────────────────────────────
 
-        txtDetailTitle.setText(title);
+    private void displayMovieDetails() {
+        txtDetailTitle.setText(movie.getDisplayTitle());
         txtDetailRating.setText("⭐ " + String.format("%.1f", movie.getVoteAverage()) + " / 10");
 
         if (movie.getRuntime() > 0) {
@@ -83,10 +85,9 @@ public class MovieDetailActivity extends AppCompatActivity {
             txtRuntime.setText("");
         }
 
-        txtOverview.setText(
-                movie.getOverview() != null && !movie.getOverview().isEmpty()
-                        ? movie.getOverview()
-                        : "Chưa có nội dung mô tả.");
+        String overview = movie.getOverview();
+        txtOverview.setText(overview != null && !overview.isEmpty()
+                ? overview : "Chưa có mô tả.");
 
         // Poster
         Glide.with(this)
@@ -94,94 +95,93 @@ public class MovieDetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder)
                 .into(imgDetailPoster);
 
-        // Backdrop (dùng poster làm backdrop nếu chưa có backdrop riêng)
+        // Backdrop
         Glide.with(this)
-                .load("https://image.tmdb.org/t/p/w780" + movie.getPosterPath()
-                        .replace("https://image.tmdb.org/t/p/w500", ""))
+                .load(movie.getBackdropUrl())
                 .placeholder(R.drawable.placeholder)
                 .into(imgBackdrop);
-
-        // Trạng thái yêu thích
-        updateFavoriteIcon();
     }
+
+    // ── Favorite ──────────────────────────────────────────────────────────────
+
+    /** Kiểm tra trạng thái yêu thích từ Firestore khi mở màn hình */
+    private void checkFavoriteStatus() {
+        if (!authViewModel.isLoggedIn()) {
+            updateFavoriteIcon(false);
+            return;
+        }
+        favoritesViewModel.checkIsFavorite(movie.getId()).observe(this, status -> {
+            isFavorite = status != null && status;
+            updateFavoriteIcon(isFavorite);
+        });
+    }
+
+    private void updateFavoriteIcon(boolean favorite) {
+        btnFavorite.setImageResource(
+                favorite ? android.R.drawable.btn_star_big_on
+                        : android.R.drawable.btn_star_big_off);
+        int color = favorite
+                ? getResources().getColor(android.R.color.holo_red_light, null)
+                : getResources().getColor(android.R.color.white, null);
+        btnFavorite.setColorFilter(color);
+    }
+
+    // ── Listeners ─────────────────────────────────────────────────────────────
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
 
         btnFavorite.setOnClickListener(v -> {
-            if (!userPrefs.isLoggedIn()) {
+            if (!authViewModel.isLoggedIn()) {
                 Toast.makeText(this, "Đăng nhập để lưu phim yêu thích", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
                 return;
             }
-            isFavorite = userPrefs.toggleFavorite(movie);
-            updateFavoriteIcon();
-            Toast.makeText(this,
-                    isFavorite ? "Đã thêm vào yêu thích ❤" : "Đã xóa khỏi yêu thích",
-                    Toast.LENGTH_SHORT).show();
+
+            // Toggle trên Firestore
+            favoritesViewModel.toggleFavorite(movie).observe(this, added -> {
+                isFavorite = added != null && added;
+                updateFavoriteIcon(isFavorite);
+                Toast.makeText(this,
+                        isFavorite ? "Đã thêm vào yêu thích ❤" : "Đã xóa khỏi yêu thích",
+                        Toast.LENGTH_SHORT).show();
+            });
         });
 
         btnPlay.setOnClickListener(v -> playMovie());
     }
 
-    // ── Yêu thích icon ───────────────────────────────────────────────────────
+    // ── Video Player ──────────────────────────────────────────────────────────
 
-    private void updateFavoriteIcon() {
-        isFavorite = userPrefs.isLoggedIn() && userPrefs.isFavorite(movie.getId());
-        btnFavorite.setImageResource(
-                isFavorite ? android.R.drawable.btn_star_big_on
-                        : android.R.drawable.btn_star_big_off);
-        btnFavorite.setColorFilter(
-                isFavorite ? getResources().getColor(android.R.color.holo_red_light, null)
-                        : getResources().getColor(android.R.color.white, null));
-    }
-
-    // ── Phát phim local ──────────────────────────────────────────────────────
-
-    /**
-     * Chiến lược phát video:
-     * 1. Nếu phim có localVideoUri (từ bộ nhớ thiết bị) → mở VideoPlayerActivity
-     * 2. Fallback → mở trình phát video mặc định của hệ thống
-     *
-     * Để test: đặt file .mp4 vào res/raw/ (ví dụ: sample.mp4)
-     * rồi dùng Uri: Uri.parse("android.resource://" + packageName + "/" + R.raw.sample)
-     */
     private void playMovie() {
-        // Thử load từ res/raw (demo)
         Uri videoUri = getSampleVideoUri();
 
         if (videoUri != null) {
-            // Mở VideoPlayerActivity nội bộ
             Intent intent = new Intent(this, VideoplayerActivity.class);
-            intent.putExtra("video_uri", videoUri.toString());
-            intent.putExtra("movie_title",
-                    movie.getTitle() != null ? movie.getTitle() : movie.getName());
+            intent.putExtra("video_uri",    videoUri.toString());
+            intent.putExtra("movie_title",  movie.getDisplayTitle());
             startActivity(intent);
         } else {
-            // Fallback: mở intent chooser (VLC, MX Player,...)
+            // Fallback: mở trình phát hệ thống
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setType("video/*");
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(Intent.createChooser(intent, "Chọn trình phát"));
             } else {
                 Toast.makeText(this,
-                        "Chưa có file video. Thêm file .mp4 vào res/raw/",
+                        "Thêm file video vào res/raw/ để phát (đặt tên: sample.mp4)",
                         Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    /**
-     * Trả về URI của video mẫu từ res/raw
-     * Đổi R.raw.sample thành tên file thực của bạn
-     */
     private Uri getSampleVideoUri() {
         try {
-            // Trỏ trực tiếp vào file trailer_avatar3 bạn vừa thêm
-            int resId = R.raw.trailer_avatar3;
-            return Uri.parse("android.resource://" + getPackageName() + "/" + resId);
-        } catch (Exception e) {
-            return null;
-        }
+            int resId = getResources().getIdentifier("sample", "raw", getPackageName());
+            if (resId != 0) {
+                return Uri.parse("android.resource://" + getPackageName() + "/" + resId);
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 }

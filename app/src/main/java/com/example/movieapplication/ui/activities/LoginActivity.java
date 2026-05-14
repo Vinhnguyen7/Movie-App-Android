@@ -8,35 +8,37 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.movieapplication.R;
-import com.example.movieapplication.data.UserPreferences;
+import com.example.movieapplication.ui.viewmodel.AuthViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import com.example.movieapplication.R;
+
+
 public class LoginActivity extends AppCompatActivity {
 
-    private TextInputLayout tilEmail, tilPassword;
+    private TextInputLayout   tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
-    private MaterialButton btnLogin;
-    private TextView tvLoginError, tvGoRegister;
-    private ProgressBar progressLogin;
+    private MaterialButton    btnLogin;
+    private TextView          tvLoginError, tvGoRegister;
+    private ProgressBar       progressLogin;
 
-    private UserPreferences userPrefs;
+    private AuthViewModel authViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Ẩn ActionBar cho màn hình login
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        userPrefs = UserPreferences.getInstance(this);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        // Nếu đã đăng nhập rồi thì về thẳng MainActivity
-        if (userPrefs.isLoggedIn()) {
+        // Nếu đã đăng nhập Firebase rồi → về thẳng MainActivity
+        if (authViewModel.isLoggedIn()) {
             goToMain();
             return;
         }
@@ -46,36 +48,39 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        tilEmail       = findViewById(R.id.tilEmail);
-        tilPassword    = findViewById(R.id.tilPassword);
-        etEmail        = findViewById(R.id.etEmail);
-        etPassword     = findViewById(R.id.etPassword);
-        btnLogin       = findViewById(R.id.btnLogin);
-        tvLoginError   = findViewById(R.id.tvLoginError);
-        tvGoRegister   = findViewById(R.id.tvGoRegister);
-        progressLogin  = findViewById(R.id.progressLogin);
+        tilEmail      = findViewById(R.id.tilEmail);
+        tilPassword   = findViewById(R.id.tilPassword);
+        etEmail       = findViewById(R.id.etEmail);
+        etPassword    = findViewById(R.id.etPassword);
+        btnLogin      = findViewById(R.id.btnLogin);
+        tvLoginError  = findViewById(R.id.tvLoginError);
+        tvGoRegister  = findViewById(R.id.tvGoRegister);
+        progressLogin = findViewById(R.id.progressLogin);
     }
 
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> attemptLogin());
 
-        tvGoRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
+        tvGoRegister.setOnClickListener(v ->
+                startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private void attemptLogin() {
-        String email    = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-        String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
+        String email    = etEmail.getText()    != null ? etEmail.getText().toString().trim() : "";
+        String password = etPassword.getText() != null ? etPassword.getText().toString()      : "";
 
         // Reset lỗi
         tilEmail.setError(null);
         tilPassword.setError(null);
         tvLoginError.setVisibility(View.GONE);
 
-        // Validate
+        // Validate phía client trước khi gọi Firebase
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("Vui lòng nhập email");
+            return;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError("Email không đúng định dạng");
             return;
         }
         if (TextUtils.isEmpty(password)) {
@@ -83,22 +88,26 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        progressLogin.setVisibility(View.VISIBLE);
-        btnLogin.setEnabled(false);
+        // Hiện loading
+        setLoading(true);
 
-        // Giả lập delay network nhỏ cho UX đẹp
-        btnLogin.postDelayed(() -> {
-            boolean success = userPrefs.login(email, password);
-            progressLogin.setVisibility(View.GONE);
-            btnLogin.setEnabled(true);
+        // Gọi Firebase Auth qua ViewModel
+        authViewModel.login(email, password).observe(this, result -> {
+            setLoading(false);
 
-            if (success) {
+            if (result.success) {
                 goToMain();
             } else {
-                tvLoginError.setText("Email hoặc mật khẩu không đúng");
+                tvLoginError.setText(result.errorMessage);
                 tvLoginError.setVisibility(View.VISIBLE);
             }
-        }, 800);
+        });
+    }
+
+    private void setLoading(boolean loading) {
+        progressLogin.setVisibility(loading ? View.VISIBLE : View.GONE);
+        btnLogin.setEnabled(!loading);
+        btnLogin.setText(loading ? "Đang đăng nhập..." : "Đăng nhập");
     }
 
     private void goToMain() {
